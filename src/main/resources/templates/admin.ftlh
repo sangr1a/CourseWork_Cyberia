@@ -18,10 +18,10 @@
                 <th><#if user.active>true<#else>false</#if></th>
                 <th><#list user.roles as role>${role}</#list></th>
                 <th>
-                    <tour action="/admin/user/ban/${user.id}" method="post">
+                    <form action="/admin/user/ban/${user.id}" method="post">
                         <input type="hidden" name="_csrf" value="${_csrf.token}">
-                        <input type="submit" class="btn btn-light" value="Бан">
-                    </tour>
+                        <input type="submit" class="btn btn-light" value="<#if user.active>Бан<#else>Разбан</#if>">
+                    </form>
                 </th>
                 <th><a href="/admin/user/edit/${user.id}">Редактировние</a></th>
                 <th><a href="/user/${user.id}">Подробная информация</a></th>

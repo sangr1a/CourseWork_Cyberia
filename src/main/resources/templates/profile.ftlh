@@ -1,6 +1,9 @@
 <#import "blocks/template.ftlh" as t>
 <@t.template user>
-    <h1 style="text-align: center">Личный кабинет</h1>
+    <#if user.isAdmin()><h1 style="text-align: center">Личный кабинет администратора</h1>
+    <#elseif user.isSeller()> <h1 style="text-align: center">Личный кабинет организации</h1>
+    <#else> <h1 style="text-align: center">Личный кабинет</h1>
+    </#if>
     <hr>
     <br>
     <div style="text-align: center">
@@ -12,7 +15,7 @@
         <br>
         Электронная почта: <b>${user.email}</b>
         <br>
-        Discord: <b>${user.phoneNumber}</b>
+        Номер телефона: <b>${user.phoneNumber}</b>
         <br>
         <br>
         <#if user.isAdmin()>
@@ -20,16 +23,26 @@
                href="/admin">
                 Панель администратора
             </a><br>
-        </#if>
+        <#elseif user.isSeller()>
         <a class="btn btn-dark mb-3" style="text-align: center; width: 100%"
            href="/my/tours">
             Мои турниры
         </a>
-        <tour action="/logout" method="post">
+        <#else>
+            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%"
+               href="/my/tours">
+                Избранное
+            </a>
+            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%"
+               href="/my/tours">
+                Покупки
+            </a>
+        </#if>
+        <form action="/logout" method="post">
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button type="submit" style="text-align: center; width: 100%" class="btn btn-danger mb-2">
                 Выйти из аккаунта
             </button>
-        </tour>
+        </form>
     </div>
 </@t.template>

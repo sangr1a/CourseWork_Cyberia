@@ -39,7 +39,7 @@ public class UserController {
 
     @PostMapping("/registration")
     public String createUser(User user, Model model) {
-        if (!userService.createBuyer(user)) {
+        if (!userService.createUser(user)) {
             model.addAttribute("errorMessage", "Пользователь с email: " + user.getEmail() + " уже существует");
             return "registration";
         }

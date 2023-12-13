@@ -22,19 +22,23 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public boolean createBuyer(User user) {
+    public boolean createUser(User user) {
         String email = user.getEmail();
+        String legalAddress = user.getLegalAddress();
         if (userRepository.findByEmail(email) != null) return false;
-        user.setActive(true);
+        if (userRepository.findByLegalAddress(legalAddress) != null) {
+            user.setActive(false);
+        }
+        else {
+            user.setActive(true);
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.getRoles().add(Role.ROLE_BUYER);
-        log.info("Saving new Buyer with email: {}", email);
+        if (userRepository.findByLegalAddress(legalAddress) == null) user.getRoles().add(Role.ROLE_BUYER);
+        else user.getRoles().add(Role.ROLE_SELLER);
+        log.info("Saving new User with email: {}", email);
         userRepository.save(user);
         return true;
     }
-
-
-
 
     public List<User> list() {
         return userRepository.findAll();
