@@ -1,4 +1,4 @@
-<#import "blocks/template.ftlh" as t>
+<#import "../blocks/template.ftlh" as t>
 <@t.template user>
     <h1 style="text-align: center">Поиск турниров</h1><hr>
     <form method="get" action="/">
@@ -34,6 +34,7 @@
                     <div class="card-body">
                         <h5 class="card-title">${tour.title}</h5>
                         <p class="card-text">${tour.game}</p>
+                        <p class="card-text">> ${tour.registeredUsers?size}</p>
                     </div>
                     <div class="card-footer">
                         ${tour.city}

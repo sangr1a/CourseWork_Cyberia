@@ -4,15 +4,14 @@ import com.example.cyberia.models.Tour;
 import com.example.cyberia.models.User;
 import com.example.cyberia.services.TourService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,7 +33,7 @@ public class TourController {
         model.addAttribute("searchWord", title);
         model.addAttribute("selectedGame", game);
         model.addAttribute("selectedCity", city);
-        return "tours";
+        return "tour/tours";
     }
 
     @GetMapping("/tour/{id}")
@@ -43,31 +42,46 @@ public class TourController {
         model.addAttribute("user", tourService.getUserByPrincipal(principal));
         model.addAttribute("tour", tour);
         model.addAttribute("authorTour", tour.getUser());
-        return "tour-info";
+        return "tour/tour-info";
     }
 
-    @PostMapping("/tour/create")
-    public String createTour(Tour tour, Principal principal) throws IOException {
-        tourService.saveTour(principal, tour);
-        return "redirect:/my/tours";
-    }
-
-    @PostMapping("/tour/delete/{id}")
-    public String deleteTour(@PathVariable Long id, Principal principal) {
-        try {
-            tourService.deleteTour(tourService.getUserByPrincipal(principal), id);
-            return "redirect:/my/tours";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/my/tours";
-        }
-    }
-
-    @GetMapping("/my/tours")
-    public String userTours(Principal principal, Model model) {
+    @PreAuthorize("hasAuthority('ROLE_VIEWER')")
+    @PostMapping("/tour/add-to-favorites/{id}")
+    public String addToFavorites(@PathVariable Long id, Principal principal) {
         User user = tourService.getUserByPrincipal(principal);
+        tourService.addToFavorites(id, user);
+        return "redirect:/tour/" + id; // Redirect to the tour details page
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_VIEWER')")
+    @PostMapping("/tour/remove-from-favorites/{id}")
+    public String removeFromFavorites(@PathVariable Long id, Principal principal) {
+        User user = tourService.getUserByPrincipal(principal);
+        tourService.removeFromFavorites(id, user);
+        return "redirect:/tour/" + id; // Redirect to the tour details page
+    }
+
+    @GetMapping("/my/favorites")
+    public String viewFavoriteTours(Model model, Principal principal) {
+        User user = tourService.getUserByPrincipal(principal);
+
+        Set<Tour> favoriteTours = user.getFavoriteTours(); // Change this based on your actual logic
+
         model.addAttribute("user", user);
-        model.addAttribute("tours", user.getTours());
-        return "my-tours";
+        model.addAttribute("favoriteTours", favoriteTours);
+
+        return "profile/user/favorites";
+    }
+
+    @GetMapping("/my/attended-tours")
+    public String viewAttendedTours(Model model, Principal principal) {
+        User user = tourService.getUserByPrincipal(principal);
+
+        Set<Tour> attendedTours = user.getAttendedTours(); // Change this based on your actual logic
+
+        model.addAttribute("user", user);
+        model.addAttribute("attendedTours", attendedTours);
+
+        return "profile/user/attended-tours";
     }
 }

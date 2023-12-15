@@ -1,7 +1,7 @@
-<#import "blocks/template.ftlh" as t>
+<#import "../../blocks/template.ftlh" as t>
 <@t.template user>
 <h1 style="text-align: center">Редактирование пользователя ${user.name}</h1><hr>
-<tour action="/admin/user/edit" method="post">
+<form action="/admin/user/edit" method="post">
     <#list roles as role>
         <div>
             <label><input type="checkbox" name="${role}" ${user.roles?seq_contains(role)?string("checked", "")}>${role}</label>
@@ -10,6 +10,6 @@
     <input type="hidden" value="${user.id}" name="userId">
     <input type="hidden" value="${_csrf.token}" name="_csrf">
     <button type="submit" class="btn btn-dark">Сохранить</button>
-</tour>
+</form>
 
 </@t.template>

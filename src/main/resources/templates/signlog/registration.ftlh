@@ -1,4 +1,4 @@
-<#import "blocks/template.ftlh" as t>
+<#import "../blocks/template.ftlh" as t>
 <@t.template user>
     <h1 style="text-align: center">Регистрация</h1>
     <hr>

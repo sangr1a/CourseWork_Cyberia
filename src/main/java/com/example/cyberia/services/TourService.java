@@ -45,6 +45,7 @@ public class TourService {
     }
     public void saveTour(Principal principal, Tour tour) throws IOException {
         tour.setUser(getUserByPrincipal(principal));
+        tour.setAvailablePasses(tour.getAvailablePasses());
         log.info("Saving new Tour. Title: {}; Author email: {}", tour.getTitle(), tour.getUser().getEmail());
         tourRepository.save(tour);
     }
@@ -66,6 +67,70 @@ public class TourService {
             }
         } else {
             log.error("Tour with id = {} is not found", id);
+        }
+    }
+
+    @Transactional
+    public void updateTourDetails(Long tourId, Tour updatedTour) {
+        Tour existingTour = getTourById(tourId);
+        if (existingTour != null) {
+            existingTour.updateTourDetails(updatedTour);
+            tourRepository.save(existingTour);
+            log.info("Tour details updated. Tour ID: {}", tourId);
+        } else {
+            log.error("Tour with ID {} not found.", tourId);
+        }
+    }
+
+    @Transactional
+    public void attendTour(Long tourId, User user) {
+        Tour tour = getTourById(tourId);
+        if (tour != null && user != null) {
+            tour.getAttendees().add(user);
+            user.getAttendedTours().add(tour);
+            tourRepository.save(tour);
+            userRepository.save(user);
+            log.info("User {} attended tour {}.", user.getEmail(), tour.getTitle());
+        } else {
+            log.error("Unable to attend tour. Tour or user not found.");
+        }
+    }
+
+    @Transactional
+    public void cancelAttendance(Long tourId, User user) {
+        Tour tour = getTourById(tourId);
+        if (tour != null && user != null) {
+            tour.getAttendees().remove(user);
+            user.getAttendedTours().remove(tour);
+            tourRepository.save(tour);
+            userRepository.save(user);
+            log.info("User {} canceled attendance for tour {}.", user.getEmail(), tour.getTitle());
+        } else {
+            log.error("Unable to cancel attendance. Tour or user not found.");
+        }
+    }
+
+    @Transactional
+    public void addToFavorites(Long tourId, User user) {
+        Tour tour = getTourById(tourId);
+        if (tour != null && user != null) {
+            user.addFavoriteTour(tour);
+            userRepository.save(user);
+            log.info("User {} added tour {} to favorites.", user.getEmail(), tour.getTitle());
+        } else {
+            log.error("Unable to add tour to favorites. Tour or user not found.");
+        }
+    }
+
+    @Transactional
+    public void removeFromFavorites(Long tourId, User user) {
+        Tour tour = getTourById(tourId);
+        if (tour != null && user != null) {
+            user.removeFavoriteTour(tour);
+            userRepository.save(user);
+            log.info("User {} removed tour {} from favorites.", user.getEmail(), tour.getTitle());
+        } else {
+            log.error("Unable to remove tour from favorites. Tour or user not found.");
         }
     }
 

@@ -9,10 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,16 +22,21 @@ public class UserService {
     public boolean createUser(User user) {
         String email = user.getEmail();
         String legalAddress = user.getLegalAddress();
-        if (userRepository.findByEmail(email) != null) return false;
-        if (userRepository.findByLegalAddress(legalAddress) != null) {
-            user.setActive(false);
-        }
-        else {
-            user.setActive(true);
-        }
+
+        if (userRepository.findByEmail(email) != null || userRepository.findByLegalAddress(legalAddress) != null) return false;
+
+        user.setActive(Objects.equals(legalAddress, ""));
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (userRepository.findByLegalAddress(legalAddress) == null) user.getRoles().add(Role.ROLE_BUYER);
-        else user.getRoles().add(Role.ROLE_SELLER);
+
+        if (legalAddress != null && !legalAddress.isEmpty()) {
+            user.getRoles().add(Role.ROLE_ORG);
+            user.setAvatarName("polar");
+        } else {
+            user.getRoles().add(Role.ROLE_VIEWER);
+            user.setAvatarName("bear");
+        }
+
         log.info("Saving new User with email: {}", email);
         userRepository.save(user);
         return true;
@@ -75,4 +77,5 @@ public class UserService {
         if (principal == null) return new User();
         return userRepository.findByEmail(principal.getName());
     }
+
 }

@@ -1,19 +1,23 @@
-<#import "blocks/template.ftlh" as t>
+<#import "../blocks/template.ftlh" as t>
 <@t.template userByPrincipal>
     <h1 style="text-align: center">Информация о пользователе</h1>
     <hr>
     <div style="text-align: center">
-            <img src="/static/images/avatar.png"
-                 style="border:2px solid black; border-radius: 20px" height="120" alt=" ">
+            <img src="/static/images/${user.avatarName}.png" height="120" alt=" ">
         <br>
         <br>
         <h2>${user.name}</h2>
-        <br>
-        Discord: <b>${user.phoneNumber}</b>
+        <#if user.isSeller()>
+            <br>
+            Номер телефона: <b>${user.phoneNumber}</b>
+            <br>
+            Юридический адресс: <b>${user.legalAddress}</b>
+        </#if>
+
     </div>
     <br>
     <hr>
-    <h1 style="text-align: center">Турниры организатора ${user.name}</h1>
+    <#if user.isSeller()><h1 style="text-align: center">Турниры организатора ${user.name}</h1></#if>
     <br>
     <div class="card-columns">
         <#list tours as tour>

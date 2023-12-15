@@ -25,7 +25,7 @@ public class AdminController {
     public String admin(Model model, Principal principal) {
         model.addAttribute("users", userService.list());
         model.addAttribute("user", userService.getUserByPrincipal(principal));
-        return "admin";
+        return "profile/admin/admin";
     }
 
     @PostMapping("/admin/user/ban/{id}")
@@ -39,7 +39,7 @@ public class AdminController {
         model.addAttribute("user", user);
         model.addAttribute("user", userService.getUserByPrincipal(principal));
         model.addAttribute("roles", Role.values());
-        return "user-edit";
+        return "profile/admin/user-edit";
     }
 
     @PostMapping("/admin/user/edit")

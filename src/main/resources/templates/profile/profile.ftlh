@@ -1,14 +1,13 @@
-<#import "blocks/template.ftlh" as t>
+<#import "../blocks/template.ftlh" as t>
 <@t.template user>
     <#if user.isAdmin()><h1 style="text-align: center">Личный кабинет администратора</h1>
-    <#elseif user.isSeller()> <h1 style="text-align: center">Личный кабинет организации</h1>
-    <#else> <h1 style="text-align: center">Личный кабинет</h1>
+    <#elseif user.isSeller()> <h1 style="text-align: center">Личный кабинет организатора</h1>
+    <#else> <h1 style="text-align: center">Личный кабинет пользователя</h1>
     </#if>
     <hr>
     <br>
     <div style="text-align: center">
-        <img src="/static/images/avatar.png"
-             style="border:2px solid black; border-radius: 20px" height="120">
+        <img src="/static/images/${user.avatarName}.png" height="120">
         <br>
         <br>
         <h2>${user.name}</h2>
@@ -29,13 +28,11 @@
             Мои турниры
         </a>
         <#else>
-            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%"
-               href="/my/tours">
+            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%" href="/my/favorites">
                 Избранное
             </a>
-            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%"
-               href="/my/tours">
-                Покупки
+            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%" href="/my/attended-tours">
+                Посещенные турниры
             </a>
         </#if>
         <form action="/logout" method="post">

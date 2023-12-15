@@ -22,13 +22,11 @@ public class User implements UserDetails {
     private String phoneNumber;
     @Getter
     private String name;
-    //@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    //@JoinColumn
-    //private Image avatar;
+    @Getter
+    private String avatarName;
     @Getter
     private String legalAddress;
     private boolean active;
-    private String activationCode;
     @Column(length = 1000)
     private String password;
 
@@ -44,26 +42,33 @@ public class User implements UserDetails {
     mappedBy = "user")
     private List<Tour> tours = new ArrayList<>();
 
-    public void addTourToUser(Tour tour) {
-        tour.setUser(this);
-        tours.add(tour);
-    }
+    @Getter
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_favorite_tours",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tour_id")
+    )
+    private Set<Tour> favoriteTours = new HashSet<>();
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_attended_tours",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tour_id")
+    )
+    @Getter
+    private Set<Tour> attendedTours = new HashSet<>();
+
+
     public boolean isAdmin() {
         return roles.contains(Role.ROLE_ADMIN);
     }
     public boolean isSeller() {
-        return roles.contains(Role.ROLE_SELLER);
+        return roles.contains(Role.ROLE_ORG);
     }
 
-    //public Image getAvatar() {
-       // return avatar;
-    //}
-
-    //public void setAvatar(Image avatar) {
-     //   this.avatar = avatar;
-    //}
-
-    public void setProducts(List<Tour> tours) {
+    public void setTours(List<Tour> tours) {
         this.tours = tours;
     }
 
@@ -71,9 +76,14 @@ public class User implements UserDetails {
         this.id = id;
     }
 
+    public void setAvatarName(String avatarName) {
+        this.avatarName = avatarName;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
+    public void setLegalAddress(String legalAddress) {this.legalAddress = legalAddress;}
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -91,14 +101,6 @@ public class User implements UserDetails {
         this.active = active;
     }
 
-    public String getActivationCode() {
-        return activationCode;
-    }
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -106,7 +108,6 @@ public class User implements UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
 
     // security config
 
@@ -144,4 +145,13 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return active;
     }
+
+    public void addFavoriteTour(Tour tour) {
+        favoriteTours.add(tour);
+    }
+
+    public void removeFavoriteTour(Tour tour) {
+        favoriteTours.remove(tour);
+    }
+
 }

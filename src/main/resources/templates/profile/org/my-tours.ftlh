@@ -1,6 +1,6 @@
-<#import "blocks/template.ftlh" as t>
+<#import "../../blocks/template.ftlh" as t>
 <@t.template user>
-    <h1 style="text-align: center">Турниры организации</h1>
+    <h1 style="text-align: center">Ваши турниры</h1>
     <hr>
     <a class="btn btn-dark mt-3 mb-3" style="text-align: center; width: 100%"
        data-toggle="collapse" href="#collapseExample" role="button"
@@ -8,7 +8,7 @@
         Добавить новый турнир
     </a>
     <div class="collapse mb-3" id="collapseExample" style="">
-        <form action="/tour/create" method="post" enctype="multipart/tour-data">
+        <form action="/tour/create" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="productName">Название турнира</label>
                 <input type="text" required class="form-control"
@@ -37,6 +37,10 @@
                 <label for="description">Описание турнира</label>
                 <textarea required class="form-control" id="description" name="description"></textarea>
             </div>
+            <div class="form-group">
+                <label for="availablePasses">Лимит посещения (0 для неограниченного посещения)</label>
+                <input type="number" required class="form-control" id="availablePasses" name="availablePasses" min="0">
+            </div>
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
 
             <button type="submit" style="width: 100%" class="btn btn-dark">Добавить</button>
@@ -53,6 +57,9 @@
                                 Удалить
                             </button>
                         </form>
+                        <a href="/tour/edit-tour/${tour.id}" class="btn btn-warning m-3">
+                            Редактировать
+                        </a>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">${tour.title}</h5>
