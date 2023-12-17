@@ -14,7 +14,7 @@
         <title>Cyberia</title>
     </head>
     <body>
-    <nav class="navbar navbar-dark
+    <nav class="navbar navbar-dark 
     <#if user.isAdmin()>bg-danger
     <#elseif user.isSeller()>bg-info
     <#else>bg-success</#if>">

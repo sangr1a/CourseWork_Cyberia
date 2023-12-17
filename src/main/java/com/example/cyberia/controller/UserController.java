@@ -34,7 +34,6 @@ public class UserController {
         return "profile/user-profile";
     }
 
-
     @GetMapping("/{user}")
     public String userInfo(@PathVariable("user") User user, Model model, Principal principal) {
         model.addAttribute("user", user);
@@ -79,6 +78,5 @@ public class UserController {
 
         return "profile/user/attended-tours";
     }
-
 
 }

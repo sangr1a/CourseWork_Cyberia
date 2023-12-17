@@ -82,7 +82,7 @@
                     <div class="card-body">
                         <a ></a>
                         <h5 class="card-title"><a href="/tour/${tour.id}" style="color: white; text-decoration: none">${tour.title}</a></h5>
-<#--                        <p class="card-text"></p>-->
+                        <p class="card-text">${tour.game.name}</p>
                     </div>
                     <div class="card-footer text-center">
                         <form action="/tour/delete/${tour.id}" method="post" class="d-inline">

@@ -9,7 +9,7 @@
                     <div class="card text-white bg-dark my-3 tour">
                         <div class="card-body">
                             <h5 class="card-title">${tour.title}</h5>
-                            <p class="card-text">${tour.game}</p>
+                            <p class="card-text">${tour.game.name}</p>
                         </div>
                         <div class="card-footer">
                             ${tour.city}

@@ -141,17 +141,4 @@ public class User implements UserDetails {
         favoriteTours.remove(tour);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id); // Use a unique identifier
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        User user = (User) obj;
-        return Objects.equals(id, user.id); // Use a unique identifier
-    }
-
 }
