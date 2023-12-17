@@ -48,25 +48,25 @@
     </div>
     <div class="card-columns">
         <#list tours as tour>
-            <a href="/tour/${tour.id}" class="tour-link">
+            <a class="tour-link">
                 <div class="card text-white bg-dark my-3 tour">
-                    <div class="card-top">
-                        <form action="/tour/delete/${tour.id}" method="post">
+                    <div class="card-top text-center">
+                    </div>
+                    <div class="card-body">
+                        <a ></a>
+                        <h5 class="card-title"><a href="/tour/${tour.id}" style="color: white; text-decoration: none">${tour.title}</a></h5>
+                        <p class="card-text">${tour.game}</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <form action="/tour/delete/${tour.id}" method="post" class="d-inline">
                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                            <button type="submit" class="btn btn-danger m-3">
+                            <button type="submit" class="btn btn-danger m-2">
                                 Удалить
                             </button>
                         </form>
-                        <a href="/tour/edit-tour/${tour.id}" class="btn btn-warning m-3">
-                            Редактировать
+                        <a href="/tour/edit-tour/${tour.id}" class="btn btn-warning m-2">
+                            Изменить
                         </a>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">${tour.title}</h5>
-                        <p class="card-text">${tour.game}</p>
-                    </div>
-                    <div class="card-footer">
-                        ${tour.city}
                     </div>
                 </div>
             </a>

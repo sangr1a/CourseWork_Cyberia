@@ -29,13 +29,8 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        if (legalAddress != null && !legalAddress.isEmpty()) {
-            user.getRoles().add(Role.ROLE_ORG);
-            user.setAvatarName("polar");
-        } else {
-            user.getRoles().add(Role.ROLE_VIEWER);
-            user.setAvatarName("bear");
-        }
+        if (legalAddress != null && !legalAddress.isEmpty()) user.getRoles().add(Role.ROLE_ORG);
+        else user.getRoles().add(Role.ROLE_VIEWER);
 
         log.info("Saving new User with email: {}", email);
         userRepository.save(user);
@@ -76,6 +71,15 @@ public class UserService {
     public User getUserByPrincipal(Principal principal) {
         if (principal == null) return new User();
         return userRepository.findByEmail(principal.getName());
+    }
+
+    public void updateUserProfile(Principal principal, User updatedUser) {
+        User currentUser = getUserByPrincipal(principal);
+        currentUser.setName(updatedUser.getName());
+        currentUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        currentUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        userRepository.save(currentUser);
+        log.info("User profile updated. User ID: {}", currentUser.getId());
     }
 
 }

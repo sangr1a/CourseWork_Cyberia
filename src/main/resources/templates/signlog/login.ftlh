@@ -2,7 +2,7 @@
 <@t.template user>
     <h1 style="text-align: center">Авторизация</h1>
     <hr>
-    <form action="/login " method="post">
+    <form action="/auth/login" method="post">
         <div class="form-group">
             <label for="email">Электронная почта</label>
             <input type="email" class="form-control <#if RequestParameters.error??>is-invalid</#if>" id="email" name="username">
@@ -34,5 +34,5 @@
         <button type="submit" style="width: 100%" class="btn btn-dark">Войти</button>
     </form>
     <hr>
-    <h2>Еще нет аккаунта? <a href="/registration">Зарегистрируйтесь!</a></h2>
+    <h2>Еще нет аккаунта? <a href="/auth/registration">Зарегистрируйтесь!</a></h2>
 </@t.template>

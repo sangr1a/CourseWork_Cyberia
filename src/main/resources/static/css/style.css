@@ -1,6 +1,7 @@
 .tour:hover {
     transition: 0.5s;
     transform: scale(1.02);
+    text-decoration: none
 }
 
 .tour-link {

@@ -1,6 +1,7 @@
 package com.example.cyberia.models;
 
 import com.example.cyberia.models.enums.Role;
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,41 +9,32 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.*;
 
+@Data
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Getter
     @Column(unique = true, updatable = false)
     private String email;
-    @Getter
     private String phoneNumber;
-    @Getter
     private String name;
-    @Getter
-    private String avatarName;
-    @Getter
     private String legalAddress;
     private boolean active;
     @Column(length = 1000)
     private String password;
 
-    @Getter
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role",
     joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 
-    @Getter
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,
     mappedBy = "user")
     private List<Tour> tours = new ArrayList<>();
 
-    @Getter
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_favorite_tours",
@@ -57,7 +49,6 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "tour_id")
     )
-    @Getter
     private Set<Tour> attendedTours = new HashSet<>();
 
 
@@ -74,10 +65,6 @@ public class User implements UserDetails {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setAvatarName(String avatarName) {
-        this.avatarName = avatarName;
     }
 
     public void setEmail(String email) {

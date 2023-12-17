@@ -1,4 +1,4 @@
-package com.example.cyberia.controllers;
+package com.example.cyberia.controller;
 
 import com.example.cyberia.models.User;
 import com.example.cyberia.models.enums.Role;
@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Map;
@@ -18,23 +15,30 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
 
-    @GetMapping("/admin")
+    /**
+     * AdminController отвечает за методы,
+     * доступные только пользователям с
+     * ролью администратора
+     */
+
+    @GetMapping("/")
     public String admin(Model model, Principal principal) {
         model.addAttribute("users", userService.list());
         model.addAttribute("user", userService.getUserByPrincipal(principal));
         return "profile/admin/admin";
     }
 
-    @PostMapping("/admin/user/ban/{id}")
+    @PostMapping("/user/ban/{id}")
     public String userBan(@PathVariable("id") Long id) {
         userService.banUser(id);
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/user/edit/{user}")
+    @GetMapping("/user/edit/{user}")
     public String userEdit(@PathVariable("user") User user, Model model, Principal principal) {
         model.addAttribute("user", user);
         model.addAttribute("user", userService.getUserByPrincipal(principal));
@@ -42,7 +46,7 @@ public class AdminController {
         return "profile/admin/user-edit";
     }
 
-    @PostMapping("/admin/user/edit")
+    @PostMapping("/user/edit")
     public String userEdit(@RequestParam("userId") User user, @RequestParam Map<String, String> tour) {
         userService.changeUserRoles(user, tour);
         return "redirect:/admin";

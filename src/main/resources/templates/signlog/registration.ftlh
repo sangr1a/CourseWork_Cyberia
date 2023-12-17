@@ -2,7 +2,7 @@
 <@t.template user>
     <h1 style="text-align: center">Регистрация</h1>
     <hr>
-    <form action="/registration" method="post">
+    <form action="/auth/registration" method="post">
         <div class="form-group">
             <label for="name">Имя пользователя</label>
             <input type="text" class="form-control" required id="name" name="name">
@@ -12,7 +12,7 @@
             <input type="email" class="form-control" id="email" required name="email">
         </div>
         <div class="form-group">
-            <label for="discord">Номер телефона</label>
+            <label for="phoneNumber">Номер телефона</label>
             <input type="text" class="form-control" id="phoneNumber" required name="phoneNumber">
         </div>
         <div class="form-group">

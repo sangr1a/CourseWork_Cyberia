@@ -5,19 +5,18 @@
         <div class="form-row">
             <div class="form-group col-md-2">
                 <label for="searchGame">Игра</label>
-                <select id="searchGame" name="game" class="form-control">
-                    <option value="">Игра не выбрана</option>
-                    <option value="Valorant">Valorant</option>
-                    <option value="League Of Legends">LoL</option>
-                    <option value="CS2">CS2</option>
-                    <option value="DOTA 2">DOTA 2</option>
-                </select>
+                    <select id="searchGame" name="game" class="form-control">
+                        <option value="">Игра не выбрана</option>
+                        <#list games as game>
+                        <option value="${game.name}">${game.name}</option>
+                        </#list>
+                    </select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label for="searchCity">Город</label>
                 <input type="text" name="searchCity" class="form-control" id="searchCity" <#if searchCity??>value="${searchCity}"</#if>>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-7">
                 <label for="searchWord">Поиск по названию</label>
                 <input type="text" name="searchWord" <#if searchWord??>value="${searchWord}"</#if> class="form-control"
                        id="searchWord">
@@ -30,11 +29,10 @@
         <#list tours as tour>
             <a href="/tour/${tour.id}" class="tour-link">
                 <div class="card text-white bg-dark my-4 tour">
-
                     <div class="card-body">
                         <h5 class="card-title">${tour.title}</h5>
-                        <p class="card-text">${tour.game}</p>
-                        <p class="card-text">> ${tour.registeredUsers?size}</p>
+                        <p class="card-text">${tour.game.name}</p>
+                        <p class="card-text">${tour.attendees?size}<#if tour.numberOfPlayers?has_content> из ${tour.numberOfPlayers}</#if></p>
                     </div>
                     <div class="card-footer">
                         ${tour.city}
