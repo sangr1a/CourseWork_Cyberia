@@ -3,7 +3,6 @@ package com.example.cyberia.services;
 import com.example.cyberia.models.Game;
 import com.example.cyberia.models.Tour;
 import com.example.cyberia.models.User;
-import com.example.cyberia.repositories.GameRepository;
 import com.example.cyberia.repositories.TourRepository;
 import com.example.cyberia.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +20,12 @@ import java.util.List;
 public class TourService {
     private final TourRepository tourRepository;
     private final UserRepository userRepository;
+    private final GameService gameService;
 
     public Tour getTourById(Long id) {
         return tourRepository.findById(id).orElse(null);
     }
 
-    public List<Tour> listTours(String title) {
-        if (title != null) return tourRepository.findByTitle(title);
-        return tourRepository.findAll();
-    }
     public List<Tour> listToursByGameAndCity(Game game, String city) {
         if (game != null && city != null && !city.isEmpty()) {
             return tourRepository.findByGameAndCityIgnoreCase(game, city);
@@ -49,11 +45,20 @@ public class TourService {
             return tourRepository.findAll();
         }
     }
-    public void saveTour(Principal principal, Tour tour) throws IOException {
-        tour.setUser(getUserByPrincipal(principal));
-        tour.setNumberOfPlayers(tour.getNumberOfPlayers());
-        log.info("Saving new Tour. Title: {}; Author email: {}", tour.getTitle(), tour.getUser().getEmail());
-        tourRepository.save(tour);
+    public void saveTour(Principal principal, Tour tour, Long gameId) throws IOException {
+        User user = getUserByPrincipal(principal);
+        Game game = gameService.getGameById(gameId); // Assuming you have a GameService with a method to get a game by ID
+
+        if (user != null && game != null) {
+            tour.setUser(user);
+            tour.setGame(game);
+            tour.setNumberOfPlayers(tour.getNumberOfPlayers());
+
+            log.info("Saving new Tour. Title: {}; Author email: {}", tour.getTitle(), user.getEmail());
+            tourRepository.save(tour);
+        } else {
+            log.error("Tour with id = {} is not found", tour.getId());
+        }
     }
 
     public User getUserByPrincipal(Principal principal) {
@@ -77,25 +82,10 @@ public class TourService {
     }
 
     @Transactional
-    public void updateTourDetails(Long tourId, Tour updatedTour) {
-        Tour existingTour = getTourById(tourId);
-        if (existingTour != null) {
-            existingTour.updateTourDetails(updatedTour);
-            tourRepository.save(existingTour);
-            log.info("Tour details updated. Tour ID: {}", tourId);
-        } else {
-            log.error("Tour with ID {} not found.", tourId);
-        }
-    }
-
-    @Transactional
     public void attendTour(Long tourId, User user) {
         Tour tour = getTourById(tourId);
         if (tour != null && user != null) {
-            tour.getAttendees().add(user);
-            user.getAttendedTours().add(tour);
-            tourRepository.save(tour);
-            userRepository.save(user);
+            addAttendeeToTour(tour, user);
             log.info("User {} attended tour {}.", user.getEmail(), tour.getTitle());
         } else {
             log.error("Unable to attend tour. Tour or user not found.");
@@ -106,13 +96,31 @@ public class TourService {
     public void cancelAttendance(Long tourId, User user) {
         Tour tour = getTourById(tourId);
         if (tour != null && user != null) {
+            removeAttendeeFromTour(tour, user);
+            log.info("User {} canceled attendance for tour {}.", user.getEmail(), tour.getTitle());
+        } else {
+            log.error("Unable to cancel attendance. Tour or user not found.");
+        }
+    }
+
+    @Transactional
+    public void addAttendeeToTour(Tour tour, User user) {
+        tour.getAttendees().add(user);
+        user.getAttendedTours().add(tour);
+        tourRepository.save(tour);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeAttendeeFromTour(Tour tour, User user) {
+        if (tour.getAttendees().contains(user)) {
             tour.getAttendees().remove(user);
             user.getAttendedTours().remove(tour);
             tourRepository.save(tour);
             userRepository.save(user);
-            log.info("User {} canceled attendance for tour {}.", user.getEmail(), tour.getTitle());
         } else {
-            log.error("Unable to cancel attendance. Tour or user not found.");
+            log.error("User {} is not a participant in the tournament {}.", user.getEmail(), tour.getTitle());
+            throw new RuntimeException("User is not a participant in the tournament.");
         }
     }
 
@@ -141,37 +149,16 @@ public class TourService {
     }
 
     @Transactional
-    public void registerForTour(Long tourId, User user) {
-        Tour tour = getTourById(tourId);
-        if (tour != null && user != null) {
-            tour.getAttendees().add(user);
-            user.getAttendedTours().add(tour);
-            tourRepository.save(tour);
-            userRepository.save(user);
-            log.info("User {} registered for tournament {}.", user.getEmail(), tour.getTitle());
-        } else {
-            log.error("Unable to register for the tournament. Tour or user not found.");
-            throw new RuntimeException("Unable to register for the tournament.");
-        }
-    }
-
-    @Transactional
     public void removeParticipant(Long tourId, User user) {
         Tour tour = getTourById(tourId);
-        if (tour != null && user != null) {
-            if (tour.getAttendees().contains(user)) {
-                tour.getAttendees().remove(user);
-                user.getAttendedTours().remove(tour);
-                tourRepository.save(tour);
-                userRepository.save(user);
-                log.info("Participant {} removed from tournament {}.", user.getEmail(), tour.getTitle());
-            } else {
-                log.error("User {} is not a participant in the tournament {}.", user.getEmail(), tour.getTitle());
-                throw new RuntimeException("User is not a participant in the tournament.");
-            }
+        if (tour != null && user != null && tour.getAttendees().contains(user)) {
+            tour.getAttendees().remove(user);
+            user.getAttendedTours().remove(tour);
+            tourRepository.save(tour);
+            userRepository.save(user);
+            log.info("Participant {} removed from tournament {}.", user.getEmail(), tour.getTitle());
         } else {
-            log.error("Unable to remove participant. Tour or user not found.");
-            throw new RuntimeException("Unable to remove participant.");
+            log.error("Unable to remove participant. Tour, user, or not a participant.");
         }
     }
 

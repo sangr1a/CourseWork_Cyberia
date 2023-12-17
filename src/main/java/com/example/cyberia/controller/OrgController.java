@@ -1,20 +1,20 @@
 package com.example.cyberia.controller;
 
+import com.example.cyberia.models.Game;
 import com.example.cyberia.models.Tour;
 import com.example.cyberia.models.User;
+import com.example.cyberia.services.GameService;
 import com.example.cyberia.services.TourService;
 import com.example.cyberia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,6 +22,7 @@ import java.security.Principal;
 public class OrgController {
     private final TourService tourService;
     private final UserService userService;
+    private final GameService gameService;
 
     /**
      * OrgController отвечает за методы,
@@ -30,8 +31,11 @@ public class OrgController {
      */
 
     @PostMapping("/tour/create")
-    public String createTour(Tour tour, Principal principal) throws IOException {
-        tourService.saveTour(principal, tour);
+    public String createTour(@ModelAttribute("tour") Tour tour,
+                             @RequestParam("gameId") Long gameId,
+                             Principal principal, Model model) throws IOException {
+        model.addAttribute("games", gameService.getAllGames());
+        tourService.saveTour(principal, tour, gameId);
         return "redirect:/my/tours";
     }
 
@@ -58,8 +62,8 @@ public class OrgController {
     }
 
     @PostMapping("/tour/edit-tour/{id}")
-    public String editTour(@ModelAttribute("tour") Tour tour, Principal principal) throws IOException {
-        tourService.saveTour(principal, tour);
+    public String editTour(@ModelAttribute("tour") Tour tour, Principal principal, @RequestParam("gameId") Long gameId) throws IOException {
+        tourService.saveTour(principal, tour, gameId);
         return "redirect:/my/tours";
     }
 
@@ -68,6 +72,7 @@ public class OrgController {
         User user = tourService.getUserByPrincipal(principal);
         model.addAttribute("user", user);
         model.addAttribute("tours", user.getTours());
+        model.addAttribute("games", gameService.getAllGames());
         return "profile/org/my-tours";
     }
 
@@ -75,12 +80,13 @@ public class OrgController {
     public String viewParticipants(@PathVariable Long id, Model model) {
         Tour tour = tourService.getTourById(id);
         model.addAttribute("tour", tour);
+        model.addAttribute("user", tour);
         model.addAttribute("participants", tour.getAttendees());
         return "profile/org/tour-participants";
     }
 
     @PostMapping("/tour/remove-participant/{tourId}/{userId}")
-    public String removeParticipant(@PathVariable Long tourId, Principal principal) {
+    public String removeParticipant(@PathVariable Long tourId, Principal principal, @PathVariable String userId) {
         User user = userService.getUserByPrincipal(principal);
         tourService.removeParticipant(tourId, user);
         return "redirect:/tour/participants/" + tourId;

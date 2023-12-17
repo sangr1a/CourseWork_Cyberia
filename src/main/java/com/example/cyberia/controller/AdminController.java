@@ -25,7 +25,7 @@ public class AdminController {
      * ролью администратора
      */
 
-    @GetMapping("/")
+    @GetMapping("/panel")
     public String admin(Model model, Principal principal) {
         model.addAttribute("users", userService.list());
         model.addAttribute("user", userService.getUserByPrincipal(principal));
@@ -35,7 +35,7 @@ public class AdminController {
     @PostMapping("/user/ban/{id}")
     public String userBan(@PathVariable("id") Long id) {
         userService.banUser(id);
-        return "redirect:/admin";
+        return "redirect:/admin/panel";
     }
 
     @GetMapping("/user/edit/{user}")
@@ -49,6 +49,6 @@ public class AdminController {
     @PostMapping("/user/edit")
     public String userEdit(@RequestParam("userId") User user, @RequestParam Map<String, String> tour) {
         userService.changeUserRoles(user, tour);
-        return "redirect:/admin";
+        return "redirect:/admin/panel/";
     }
 }

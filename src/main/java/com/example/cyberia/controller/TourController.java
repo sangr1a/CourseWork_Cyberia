@@ -55,25 +55,13 @@ public class TourController {
     public String addToFavorites(@PathVariable Long id, Principal principal) {
         User user = tourService.getUserByPrincipal(principal);
         tourService.addToFavorites(id, user);
-        return "redirect:/tour/" + id; // Redirect to the tour details page
+        return "redirect:/tour/" + id;
     }
 
     @PostMapping("/remove-from-favorites/{id}")
     public String removeFromFavorites(@PathVariable Long id, Principal principal) {
         User user = tourService.getUserByPrincipal(principal);
         tourService.removeFromFavorites(id, user);
-        return "redirect:/tour/" + id; // Redirect to the tour details page
-    }
-
-    @PostMapping("/register/{id}")
-    public String registerForTour(@PathVariable Long id, Principal principal) {
-        User user = userService.getUserByPrincipal(principal);
-        try {
-            tourService.registerForTour(id, user);
-            return "redirect:/tour/" + id;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/tour/" + id;
-        }
+        return "redirect:/tour/" + id;
     }
 }

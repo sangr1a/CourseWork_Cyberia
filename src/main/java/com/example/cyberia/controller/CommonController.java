@@ -52,6 +52,7 @@ public class CommonController {
         model.addAttribute("user", tourService.getUserByPrincipal(principal));
         model.addAttribute("tour", tour);
         model.addAttribute("authorTour", tour.getUser());
+        model.addAttribute("tourGame", tour.getGame());
         return "tour/tour-info";
     }
 

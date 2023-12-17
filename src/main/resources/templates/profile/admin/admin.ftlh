@@ -5,7 +5,7 @@
         <tr>
             <th scope="col">Email</th>
             <th scope="col">Номер телефона</th>
-            <th scope="col">Статус активности аккаунта</th>
+            <th scope="col">Статус аккаунта</th>
             <th scope="col">Роли</th>
             <th scope="col">Бан</th>
             <th scope="col">Редактирование</th>
@@ -15,7 +15,7 @@
             <tr>
                 <th>${user.email}</th>
                 <th>${user.phoneNumber}</th>
-                <th><#if user.active>true<#else>false</#if></th>
+                <th><#if user.active>Активен<#else>Не активен</#if></th>
                 <th><#list user.roles as role>${role}</#list></th>
                 <th>
                     <form action="/admin/user/ban/${user.id}" method="post">

@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -15,7 +16,6 @@ public class Tour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Boolean privacy;
     private String title;
     private String format;
     private String formatType;
@@ -55,6 +55,19 @@ public class Tour {
         this.setCity(updatedTour.getCity());
         this.setAddress(updatedTour.getAddress());
         this.setNumberOfPlayers(updatedTour.getNumberOfPlayers());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // Use a unique identifier
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Tour tour = (Tour) obj;
+        return Objects.equals(id, tour.id); // Use a unique identifier
     }
 
 }

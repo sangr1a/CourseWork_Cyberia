@@ -26,7 +26,7 @@
 
                     <div class="card-body">
                         <h5 class="card-title">${tour.title}</h5>
-                        <p class="card-text">${tour.game}</p>
+<#--                        <p class="card-text">${tour.game}</p>-->
                     </div>
                     <div class="card-footer">
                         ${tour.user.name}

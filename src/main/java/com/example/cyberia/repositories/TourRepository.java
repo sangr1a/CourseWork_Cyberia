@@ -10,8 +10,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TourRepository extends JpaRepository<Tour, Long> {
-    List<Tour> findByTitle(String title);
-
     @Modifying
     @Query("delete from Tour f where f.id = ?1")
     void delete(Long id);

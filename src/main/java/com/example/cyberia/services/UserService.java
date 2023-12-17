@@ -23,7 +23,7 @@ public class UserService {
         String email = user.getEmail();
         String legalAddress = user.getLegalAddress();
 
-        if (userRepository.findByEmail(email) != null || userRepository.findByLegalAddress(legalAddress) != null) return false;
+        if (userRepository.findByEmail(email) != null) return false;
 
         user.setActive(Objects.equals(legalAddress, ""));
 
@@ -77,6 +77,7 @@ public class UserService {
         User currentUser = getUserByPrincipal(principal);
         currentUser.setName(updatedUser.getName());
         currentUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        currentUser.setEmail(updatedUser.getEmail());
         currentUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         userRepository.save(currentUser);
         log.info("User profile updated. User ID: {}", currentUser.getId());

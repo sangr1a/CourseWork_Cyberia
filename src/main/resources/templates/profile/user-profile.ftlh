@@ -48,7 +48,7 @@
 
         <#if user.isAdmin()>
             <a class="btn btn-dark mb-3" style="text-align: center; width: 100%"
-               href="/admin">
+               href="/admin/panel">
                 Панель администратора
             </a><br>
         <#elseif user.isSeller()>
@@ -57,10 +57,10 @@
             Турниры организации
         </a>
         <#else>
-            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%" href="/my/favorites">
+            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%" href="/user/my/favorites">
                 Избранное
             </a>
-            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%" href="/my/attended-tours">
+            <a class="btn btn-dark mb-3" style="text-align: center; width: 100%" href="/user/my/attended-tours">
                 Посещенные турниры
             </a>
         </#if>
