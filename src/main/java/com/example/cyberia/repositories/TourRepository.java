@@ -13,10 +13,7 @@ public interface TourRepository extends JpaRepository<Tour, Long> {
     @Modifying
     @Query("delete from Tour f where f.id = ?1")
     void delete(Long id);
-
-    List<Tour> findByGameAndCityIgnoreCase(Game game, String city);
-    List<Tour> findByGame(Game game);
-    List<Tour> findByCityIgnoreCase(String city);
+    List<Tour> findByGameId(Long gameID);
 
     @Query("SELECT f FROM Tour f WHERE LOWER(f.title) LIKE LOWER(CONCAT('%', :title, '%'))")
     List<Tour> findByTitleContainingIgnoreCase(@Param("title") String title);

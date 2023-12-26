@@ -21,10 +21,10 @@
         </div>
         <div class="form-check">
             <input type="checkbox" class="form-check-input" id="organizerCheckbox" name="organizerCheckbox">
-            <label class="form-check-label" for="organizerCheckbox">Я хочу зарегистрироваться как организатор</label>
+            <label class="form-check-label" for="organizerCheckbox">Регистрация организатора</label>
         </div>
         <div class="form-group" id="legalAddressGroup" style="display:none;">
-            <label for="legalAddress">Юридический адрес</label>
+            <label for="legalAddress">"Юридический" адрес (учебное заведение)</label>
             <input type="text" class="form-control" id="legalAddress" name="legalAddress">
         </div>
         <input type="hidden" name="_csrf" value="${_csrf.token}">

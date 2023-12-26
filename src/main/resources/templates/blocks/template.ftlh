@@ -14,10 +14,10 @@
         <title>Cyberia</title>
     </head>
     <body>
-    <nav class="navbar navbar-dark 
-    <#if user.isAdmin()>bg-danger
-    <#elseif user.isSeller()>bg-info
-    <#else>bg-success</#if>">
+    <nav class="navbar navbar-dark
+   <#if user.isAdmin()>bg-danger
+    <#elseif user.isOrg()>bg-info
+   <#else>bg-success</#if>">
         <div class="container-fluid">
             <a href="/">
                 <span class="navbar-brand mb-0 h1">Cyberia</span>
@@ -25,7 +25,7 @@
             <#if user.email??>
                 <div class="dropdown text-end">
                     <a href="/user/profile">
-                        <img src="/static/images/<#list user.roles as role>${role}</#list>.png" alt="mdo"
+                        <img src="/static/images/userImages/<#list user.roles as role>${role}</#list>.png" alt="admin"
                              width="48" height="48">
                     </a>
                 </div>

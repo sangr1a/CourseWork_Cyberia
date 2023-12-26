@@ -30,7 +30,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (legalAddress != null && !legalAddress.isEmpty()) user.getRoles().add(Role.ROLE_ORG);
-        else user.getRoles().add(Role.ROLE_VIEWER);
+        else user.getRoles().add(Role.ROLE_USER);
 
         log.info("Saving new User with email: {}", email);
         userRepository.save(user);

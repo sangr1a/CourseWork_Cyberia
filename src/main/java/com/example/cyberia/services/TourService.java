@@ -3,6 +3,7 @@ package com.example.cyberia.services;
 import com.example.cyberia.models.Game;
 import com.example.cyberia.models.Tour;
 import com.example.cyberia.models.User;
+import com.example.cyberia.models.enums.TourStatus;
 import com.example.cyberia.repositories.TourRepository;
 import com.example.cyberia.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,15 @@ public class TourService {
         return tourRepository.findById(id).orElse(null);
     }
 
-    public List<Tour> listToursByGameAndCity(Game game, String city) {
-        if (game != null && city != null && !city.isEmpty()) {
-            return tourRepository.findByGameAndCityIgnoreCase(game, city);
-        } else if (game != null) {
-            return tourRepository.findByGame(game);
-        } else if (city != null && !city.isEmpty()) {
-            return tourRepository.findByCityIgnoreCase(city);
+    public List<Tour> listToursByGame(Long gameId) {
+        if (gameId != null) {
+            Game game = gameService.getGameById(gameId);
+            if (game != null) {
+                return tourRepository.findByGameId(gameId);
+            } else {
+                log.error("Game with id = {} is not found", gameId);
+                return tourRepository.findAll();
+            }
         } else {
             return tourRepository.findAll();
         }
@@ -50,9 +53,11 @@ public class TourService {
         Game game = gameService.getGameById(gameId); // Assuming you have a GameService with a method to get a game by ID
 
         if (user != null && game != null) {
-            tour.setUser(user);
-            tour.setGame(game);
-            tour.setNumberOfPlayers(tour.getNumberOfPlayers());
+//            tour.setUser(user);
+//            tour.setGame(game);
+//            tour.setNumberOfPlayers(tour.getNumberOfPlayers());
+
+            tour.getTourStatus().add(TourStatus.NEW);
 
             log.info("Saving new Tour. Title: {}; Author email: {}", tour.getTitle(), user.getEmail());
             tourRepository.save(tour);

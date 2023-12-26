@@ -1,13 +1,13 @@
 <#import "../blocks/template.ftlh" as t>
 <@t.template user>
     <#if user.isAdmin()><h1 style="text-align: center">Личный кабинет администратора</h1>
-    <#elseif user.isSeller()> <h1 style="text-align: center">Личный кабинет организатора</h1>
+    <#elseif user.isOrg()> <h1 style="text-align: center">Личный кабинет организатора</h1>
     <#else> <h1 style="text-align: center">Личный кабинет пользователя</h1>
     </#if>
     <hr>
     <br>
     <div style="text-align: center">
-        <img src="/static/images/<#list user.roles as role>${role}</#list>.png" height="120">
+        <img src="/static/images/userImages/<#list user.roles as role>${role}</#list>.png" height="120">
         <br>
         <br>
         <h2>${user.name}</h2>
@@ -37,8 +37,12 @@
                     <label for="phoneNumber">Номер телефона</label>
                     <input type="text" class="form-control" value="${user.phoneNumber}" id="phoneNumber" required name="phoneNumber">
                 </div>
+<#--                <div class="form-group">-->
+<#--                    <label for="password">Старый пароль</label>-->
+<#--                    <input type="password" class="form-control" id="password" required name="password">-->
+<#--                </div>-->
                 <div class="form-group">
-                    <label for="password">Пароль</label>
+                    <label for="password">Новый пароль</label>
                     <input type="password" class="form-control" id="password" required name="password">
                 </div>
                 <input type="hidden" name="_csrf" value="${_csrf.token}">
@@ -51,7 +55,7 @@
                href="/admin/panel">
                 Панель администратора
             </a><br>
-        <#elseif user.isSeller()>
+        <#elseif user.isOrg()>
         <a class="btn btn-dark mb-3" style="text-align: center; width: 100%"
            href="/my/tours">
             Турниры организации

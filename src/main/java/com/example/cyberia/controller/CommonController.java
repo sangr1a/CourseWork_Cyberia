@@ -27,13 +27,11 @@ public class CommonController {
 
     @GetMapping("/")
     public String tours(@RequestParam(name = "searchWord", required = false) String title,
-                        @RequestParam(name = "name", required = false) String gameName,
-                        @RequestParam(name = "id", required = false) Long gameId,
-                        @RequestParam(name = "searchCity", required = false) String city,
+                        @RequestParam(name = "selectedGameID", required = false) Long gameId,
+                        @RequestParam(name = "gameName", required = false) String gameName,
                         Principal principal, Model model) {
-        Game game = (gameId != null) ? gameService.getGameById(gameId) : null;
-        if (game != null || (city != null && !city.isEmpty())) {
-            model.addAttribute("tours", tourService.listToursByGameAndCity(game, city));
+        if (gameId != null) {
+            model.addAttribute("tours", tourService.listToursByGame(gameId));
         } else {
             model.addAttribute("tours", tourService.listToursByTitle(title));
         }
@@ -41,9 +39,8 @@ public class CommonController {
         model.addAttribute("user", tourService.getUserByPrincipal(principal));
         model.addAttribute("games", gameService.listGamesByName(gameName));
         model.addAttribute("searchWord", title);
-        model.addAttribute("selectedGame", game);
-        model.addAttribute("selectedCity", city);
-        return "tour/tours";
+        model.addAttribute("selectedGameID", gameId);
+        return "tour/main";
     }
 
     @GetMapping("/tour/{id}")

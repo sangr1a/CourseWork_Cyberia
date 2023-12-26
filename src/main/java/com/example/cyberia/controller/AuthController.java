@@ -5,6 +5,7 @@ import com.example.cyberia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,10 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public String createUser(User user, Model model) {
+    public String createUser(User user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "signlog/registration";
+        }
         if (!userService.createUser(user)) {
             model.addAttribute("errorMessage", "Пользователь с email: " + user.getEmail() + " уже существует");
             return "signlog/registration";

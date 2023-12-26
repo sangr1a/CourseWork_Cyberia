@@ -10,9 +10,9 @@
                 <div id="email" class="invalid-feedback">
                     Пользователь с таким email ограничен в доступе к сервису
                 </div>
-            <#elseif !user.active && user.seller>
+            <#elseif !user.active && user.isOrg()>
                 <div id="email" class="invalid-feedback">
-                    Ожидайте подтверждения заявки
+                    Ожидание подтверждения регистрации администратором
                 </div>
             <#else>
             <div id="email" class="invalid-feedback">

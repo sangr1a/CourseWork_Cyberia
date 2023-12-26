@@ -2,11 +2,13 @@ package com.example.cyberia.models;
 
 import com.example.cyberia.models.enums.Role;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.*;
 
 @Data
@@ -16,6 +18,10 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //@NotEmpty(message = "Email cannot be empty")
+    @Email(message = "Invalid email format")
+    //@Pattern(regexp = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid email format")
     @Column(unique = true, updatable = false)
     private String email;
     private String phoneNumber;
@@ -55,7 +61,7 @@ public class User implements UserDetails {
     public boolean isAdmin() {
         return roles.contains(Role.ROLE_ADMIN);
     }
-    public boolean isSeller() {
+    public boolean isOrg() {
         return roles.contains(Role.ROLE_ORG);
     }
 

@@ -2,7 +2,7 @@
 <@t.template user>
     `<h1 style="text-align: center">Панель администратора</h1><hr>
     <table class="table table-hover table-dark">
-        <tr>
+        <tr><th scope="col"> </th>
             <th scope="col">Email</th>
             <th scope="col">Номер телефона</th>
             <th scope="col">Статус аккаунта</th>
@@ -13,6 +13,7 @@
         </tr>
         <#list users as user>
             <tr>
+                <th><image href="/static/images/userImages/<#list user.roles as role>${role}</#list>.png"></image></th>
                 <th>${user.email}</th>
                 <th>${user.phoneNumber}</th>
                 <th><#if user.active>Активен<#else>Не активен</#if></th>
